@@ -48,4 +48,11 @@ MongoClient.connect(connectionString, {
       .catch(error => console.error(error))
     // ...
   })
+  app.post('/ProductView', (req, res) => {
+    console.log(req.body);
+    db.collection('product').find(req.body)
+      .then(result => {
+        console.log(result)
+      })
+  })
 })
