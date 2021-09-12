@@ -13,7 +13,8 @@ app.listen(PORT, function() {
 })
 
 
-const MongoClient = require('mongodb').MongoClient
+const MongoClient = require('mongodb').MongoClient;
+const { ObjectId } = require('mongodb');
 const connectionString = 'mongodb+srv://admin:trutru00@cluster0.f5h3m.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 MongoClient.connect(connectionString, {
   useUnifiedTopology: true
@@ -22,6 +23,7 @@ MongoClient.connect(connectionString, {
   console.log('Connected to Database');
   const db = client.db('Menu-App');
   const products = db.collection('products');
+  const cart = db.collection('cart');
 
   app.post("/add", (req, res) => {
     console.log('Adding new Product')
@@ -48,11 +50,13 @@ MongoClient.connect(connectionString, {
       .catch(error => console.error(error))
     // ...
   })
-  app.post('/ProductView', (req, res) => {
-    console.log(req.body);
-    db.collection('product').find(req.body)
-      .then(result => {
-        console.log(result)
+  app.post('/Product', (req, res) => {
+    const id = req.body.id;
+    db.collection('products').find({_id: ObjectId(`${id}`)}).toArray()
+      .then(result => { 
+        res.send(result[0]);
+        console.log(result[0])
       })
+      .catch(error => console.error(error))
   })
 })
